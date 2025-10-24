@@ -138,7 +138,7 @@ class TestAccountService(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
         self.assertEqual(data["name"], account.name)
-    
+
     # CODE COVERAGE TEST
     def test_get_account_not_found(self):
         """It should not Read an Account that is not found"""
@@ -152,7 +152,7 @@ class TestAccountService(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
         self.assertEqual(len(data), 5)
-    
+
     def test_update_account(self):
         """It should Update an existing Account"""
         # create an Account to update
@@ -172,7 +172,7 @@ class TestAccountService(TestCase):
         """It should Delete an Account"""
         account = self._create_accounts(1)[0]
         resp = self.client.delete(f"{BASE_URL}/{account.id}")
-        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)  
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_method_not_allowed(self):
         """It should not allow an illegal method call"""
@@ -195,6 +195,7 @@ def test_security_headers():
     for key, value in expected.items():
         assert resp.headers.get(key) == value
 
+
 def test_cors_security():
     """It should return a CORS header"""
     client = app.test_client()
@@ -202,4 +203,3 @@ def test_cors_security():
     assert resp.status_code == status.HTTP_200_OK
     # Vérifie l’en-tête CORS sur la réponse simple GET
     assert resp.headers.get("Access-Control-Allow-Origin") == "*"
-
