@@ -180,26 +180,26 @@ class TestAccountService(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
-    def test_security_headers():
-        """It should return security headers"""
-        client = app.test_client()
-        resp = client.get("/", environ_overrides=HTTPS_ENVIRON)
-        assert resp.status_code == status.HTTP_200_OK
+def test_security_headers():
+    """It should return security headers"""
+    client = app.test_client()
+    resp = client.get("/", environ_overrides=HTTPS_ENVIRON)
+    assert resp.status_code == status.HTTP_200_OK
 
-        expected = {
-            "X-Frame-Options": "SAMEORIGIN",
-            "X-Content-Type-Options": "nosniff",
-            "Content-Security-Policy": "default-src 'self'; object-src 'none'",
-            "Referrer-Policy": "strict-origin-when-cross-origin",
-        }
-        for key, value in expected.items():
-            assert resp.headers.get(key) == value
+    expected = {
+        "X-Frame-Options": "SAMEORIGIN",
+        "X-Content-Type-Options": "nosniff",
+        "Content-Security-Policy": "default-src 'self'; object-src 'none'",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
+    }
+    for key, value in expected.items():
+        assert resp.headers.get(key) == value
 
-    def test_cors_security():
-        """It should return a CORS header"""
-        client = app.test_client()
-        resp = client.get("/", environ_overrides=HTTPS_ENVIRON)
-        assert resp.status_code == status.HTTP_200_OK
-        # Vérifie l’en-tête CORS sur la réponse simple GET
-        assert resp.headers.get("Access-Control-Allow-Origin") == "*"
+def test_cors_security():
+    """It should return a CORS header"""
+    client = app.test_client()
+    resp = client.get("/", environ_overrides=HTTPS_ENVIRON)
+    assert resp.status_code == status.HTTP_200_OK
+    # Vérifie l’en-tête CORS sur la réponse simple GET
+    assert resp.headers.get("Access-Control-Allow-Origin") == "*"
 
