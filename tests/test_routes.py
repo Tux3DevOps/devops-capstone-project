@@ -22,9 +22,11 @@ BASE_URL = "/accounts"
 
 HTTPS_ENVIRON = {'wsgi.url_scheme': 'https'}
 
+
 ######################################################################
 #  T E S T   C A S E S
 ######################################################################
+
 class TestAccountService(TestCase):
     """Account Service Tests"""
 
@@ -177,48 +179,27 @@ class TestAccountService(TestCase):
         resp = self.client.delete(BASE_URL)
         self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
-###########################################################
-# SECURITY TEST CASE 
-###########################################################
-# def test_security_headers(self):
-#     """It should return security headers"""
-#     response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
-#     self.assertEqual(response.status_code, status.HTTP_200_OK)
-#     headers = {
-#         'X-Frame-Options': 'SAMEORIGIN',
-#         'X-Content-Type-Options': 'nosniff',
-#         'Content-Security-Policy': 'default-src \'self\'; object-src \'none\'',
-#         'Referrer-Policy': 'strict-origin-when-cross-origin'
-#     }
-#     for key, value in headers.items():
-#         self.assertEqual(response.headers.get(key), value)
 
-def test_security_headers():
-    """It should return security headers"""
-    client = app.test_client()
-    resp = client.get("/", environ_overrides=HTTPS_ENVIRON)
-    assert resp.status_code == status.HTTP_200_OK
+    def test_security_headers():
+        """It should return security headers"""
+        client = app.test_client()
+        resp = client.get("/", environ_overrides=HTTPS_ENVIRON)
+        assert resp.status_code == status.HTTP_200_OK
 
-    expected = {
-        "X-Frame-Options": "SAMEORIGIN",
-        "X-Content-Type-Options": "nosniff",
-        "Content-Security-Policy": "default-src 'self'; object-src 'none'",
-        "Referrer-Policy": "strict-origin-when-cross-origin",
-    }
-    for key, value in expected.items():
-        assert resp.headers.get(key) == value
+        expected = {
+            "X-Frame-Options": "SAMEORIGIN",
+            "X-Content-Type-Options": "nosniff",
+            "Content-Security-Policy": "default-src 'self'; object-src 'none'",
+            "Referrer-Policy": "strict-origin-when-cross-origin",
+        }
+        for key, value in expected.items():
+            assert resp.headers.get(key) == value
 
-# def test_cors_security():
-#     """It should return a CORS header"""
-#     response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
-#     self.assertEqual(response.status_code, status.HTTP_200_OK)
-#     # Check for the CORS header
-#     self.assertEqual(response.headers.get('Access-Control-Allow-Origin'), '*')
+    def test_cors_security():
+        """It should return a CORS header"""
+        client = app.test_client()
+        resp = client.get("/", environ_overrides=HTTPS_ENVIRON)
+        assert resp.status_code == status.HTTP_200_OK
+        # Vérifie l’en-tête CORS sur la réponse simple GET
+        assert resp.headers.get("Access-Control-Allow-Origin") == "*"
 
-def test_cors_security():
-    """It should return a CORS header"""
-    client = app.test_client()
-    resp = client.get("/", environ_overrides=HTTPS_ENVIRON)
-    assert resp.status_code == status.HTTP_200_OK
-    # Vérifie l’en-tête CORS sur la réponse simple GET
-    assert resp.headers.get("Access-Control-Allow-Origin") == "*"
